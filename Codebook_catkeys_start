@@ -2,22 +2,27 @@
 
 #I can repurpose this code to create functions for creating our catkeys and codebook files!
 
-
+#make a schema - need this to make a blank df in pyspark
 input_schema = """
 value string,
 code string
 """
-
+#use schema to make empty df
 df_all = spark.createDataFrame(
 spark.sparkContext.emptyRDD(),
 input_schema)
 
+#for each column, get the distinct values
+#put them in a dataframe, add a second column called code - which is the column name
+#put the all into one dataframe
 for col in rescue.columns:
   df = rescue.select(col).distinct()
   df = df.withColumnRenamed(col, "value").withColumn("code", F.lit(col))
   df_all = df_all.union(df)
 
+#looks like this
 df_all.show()
+#how many?
 df_all.count()
 
 #This seems like it would work for making the catkeys
@@ -28,7 +33,6 @@ for col in rescue.columns:
   df_ = rescue.select(col).distinct()
   df_.show()
   
+#Not sure if this is what we need for the codebooks but I will look into that more this week
   
-  #I need to get the individual outputs as dataframes
-  
-  #And then add code to output as .csv files
+#Would also want to add to this code for adding the outputs into .csv files so we can use them in FTB uploads
