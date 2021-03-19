@@ -1,0 +1,34 @@
+#This is some code Adrian helped me with to get the variabled from the rescue dataset
+
+#I can repurpose this code to create functions for creating our catkeys and codebook files!
+
+
+input_schema = """
+value string,
+code string
+"""
+
+df_all = spark.createDataFrame(
+spark.sparkContext.emptyRDD(),
+input_schema)
+
+for col in rescue.columns:
+  df = rescue.select(col).distinct()
+  df = df.withColumnRenamed(col, "value").withColumn("code", F.lit(col))
+  df_all = df_all.union(df)
+
+df_all.show()
+df_all.count()
+
+#This seems like it would work for making the catkeys
+
+#And for each of the values individually it would be like this
+
+for col in rescue.columns:
+  df_ = rescue.select(col).distinct()
+  df_.show()
+  
+  
+  #I need to get the individual outputs as dataframes
+  
+  #And then add code to output as .csv files
